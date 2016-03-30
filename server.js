@@ -46,6 +46,35 @@ app.use('/login',  loginRouter);
 app.use('/evento',  eventoRouter);
 
 
+
+app.get("/events", function(req, res) {
+  db.collection(CONTACTS_COLLECTION).find({}).toArray(function(err, docs) {
+    if (err) {
+      handleError(err.message, "Failed to get contacts.");
+    } else {
+      res.status(200).json(docs);  
+    }
+  });
+});
+
+app.post("/events", function(req, res) {
+  var newEvent = req.body;
+  newEvent.createDate = new Date();
+
+  if (!(req.body.firstName || req.body.lastName)) {
+    handleError("Invalid user input", "Must provide a first or last name.", 400);
+  }
+
+  db.collection(CONTACTS_COLLECTION).insertOne(newEvent, function(err, doc) {
+    if (err) {
+      handleError(err.message, "Failed to create new contact.");
+    } else {
+      res.status(201).json(doc.ops[0]);
+    }
+  });
+});
+
+
 // CONTACTS API ROUTES BELOW
 
 // Generic error handler used by all endpoints.
