@@ -6,6 +6,8 @@ var ObjectID = mongodb.ObjectID;
 
 var CONTACTS_COLLECTION = "contacts";
 
+var models = require('./models');
+
 var app = express();
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.json());
@@ -30,6 +32,19 @@ mongodb.MongoClient.connect(process.env.MONGOLAB_URI, function (err, database) {
     console.log("App now running on port", port);
   });
 });
+
+// Importamos los módulos enrutadores
+
+// del recurso 'users'
+var registerRouter = require('./routes/register');
+var loginRouter = require('./routes/login');
+var eventoRouter = require('./routes/evento');
+
+// Y los usamos para los caminos que toquen
+app.use('/register',  registerRouter);
+app.use('/login',  loginRouter);
+app.use('/evento',  eventoRouter);
+
 
 // CONTACTS API ROUTES BELOW
 
